@@ -2,26 +2,49 @@
 <html lang="en">
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
     <title>CloudNotes</title>
     <style>
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #000; }
-        .cyber-card { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: 0 0 50px -12px rgba(59, 130, 246, 0.25); }
+        body { 
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: #000000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+        }
+        .cyber-card {
+            background: rgba(8, 8, 8, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: 0 0 60px -15px rgba(59, 130, 246, 0.3);
+        }
+        .status-blink {
+            box-shadow: 0 0 10px #3b82f6;
+        }
     </style>
 </head>
 <body class="text-zinc-500 min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-xl cyber-card rounded-[2.5rem] p-12 backdrop-blur-3xl">
+    <div class="w-full max-w-xl cyber-card rounded-[3rem] p-12 backdrop-blur-2xl">
+        
         <header class="flex flex-col items-center mb-10 text-center">
-            <h1 class="text-3xl font-bold text-white tracking-tighter">CloudNotes</h1>
-            <p class="text-[10px] uppercase tracking-[0.3em] text-blue-500 font-bold mt-2 font-mono">Status: Online</p>
+            <div class="flex items-center gap-3 mb-4 px-4 py-1.5 bg-zinc-900/50 rounded-full border border-white/5">
+                <span class="h-2 w-2 rounded-full bg-blue-500 animate-ping status-blink"></span>
+                <span class="text-[10px] uppercase tracking-[0.4em] text-blue-400 font-bold">System Online</span>
+            </div>
+            <h1 class="text-4xl font-bold text-white tracking-tighter">CloudNotes</h1>
         </header>
 
         <div class="space-y-8">
-            <textarea id="note" class="w-full h-64 p-6 bg-transparent text-zinc-100 border-b border-zinc-900 focus:border-blue-600 focus:outline-none transition-all resize-none text-lg" placeholder="Enter data..."></textarea>
-            <button onclick="sendToCloud()" class="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold transition-all active:scale-95 flex items-center justify-center">
-                <span id="btn-text">SYNC DATA</span>
+            <div class="relative group">
+                <textarea id="note" 
+                    class="w-full h-64 p-6 bg-transparent text-zinc-100 placeholder-zinc-800 border-b border-zinc-900 focus:border-blue-600 focus:outline-none transition-all resize-none text-xl" 
+                    placeholder="Input data..."></textarea>
+            </div>
+
+            <button onclick="sendToCloud()" 
+                class="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-bold transition-all shadow-[0_20px_40px_-10px_rgba(59,130,246,0.5)] active:scale-95 flex items-center justify-center text-lg tracking-widest uppercase">
+                <span id="btn-text">Sync Data</span>
             </button>
-            <div id="out" class="text-center font-mono text-[9px] text-zinc-700 uppercase tracking-widest leading-relaxed h-4"></div>
+
+            <div id="out" class="text-center font-mono text-xs font-bold uppercase tracking-widest leading-relaxed h-6"></div>
         </div>
     </div>
 
@@ -31,8 +54,9 @@
             const btn = document.getElementById('btn-text');
             const content = document.getElementById('note').value;
             
-            out.innerText = "> Initializing...";
-            btn.innerText = "UPLOADING...";
+            out.className = "text-center font-mono text-xs font-bold text-blue-500 animate-pulse uppercase tracking-widest";
+            out.innerText = "> Initializing Transfer";
+            btn.innerText = "Processing...";
 
             try {
                 const res = await fetch('/api/save', {
@@ -40,16 +64,17 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: content })
                 });
-
-                if (!res.ok) throw new Error(`Server responded with ${res.status}`);
-
                 const data = await res.json();
-                out.innerText = `> Handshake Complete: ${data.byteSize}B received`;
+                
+                // Bold and Highlighted Success Message
+                out.className = "text-center font-mono text-xs font-bold text-white bg-blue-600/20 py-2 rounded-lg border border-blue-500/30 uppercase tracking-widest";
+                out.innerText = `SYNCED: ${data.byteSize}B @ ${data.timestamp}`;
+                
                 btn.innerText = "SUCCESS";
-                setTimeout(() => { btn.innerText = "SYNC DATA"; }, 2000);
+                setTimeout(() => { btn.innerText = "Sync Data"; }, 2500);
             } catch (err) {
-                console.error(err);
-                out.innerText = `> Error: ${err.message}`;
+                out.className = "text-center font-mono text-xs font-bold text-red-500 uppercase tracking-widest";
+                out.innerText = "> ERROR: Connection Lost";
                 btn.innerText = "RETRY";
             }
         }
