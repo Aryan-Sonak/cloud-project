@@ -2,50 +2,55 @@
 <html lang="en">
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
     <title>CloudNotes</title>
     <style>
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: radial-gradient(circle at top left, #1a1a1a, #000);
+            font-family: 'Space Grotesk', sans-serif; 
+            background-color: #000000;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3仿真%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-size: 150px 150px;
+            background-repeat: repeat;
+            opacity: 0.98;
         }
-        .glow-box {
-            box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.2);
+        .cyber-card {
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 50px -12px rgba(59, 130, 246, 0.25);
         }
-        .mesh-bg {
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.05) 0px, transparent 50%);
+        .glow-text {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
         }
     </style>
 </head>
-<body class="mesh-bg text-zinc-400 min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-2xl bg-zinc-900/40 border border-white/5 rounded-[2rem] p-12 glow-box backdrop-blur-xl">
+<body class="text-zinc-500 min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-xl cyber-card rounded-[2.5rem] p-12 backdrop-blur-3xl">
         
-        <header class="flex items-center gap-4 mb-10">
-            <div class="h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+        <header class="flex flex-col items-center mb-10 text-center">
+            <div class="h-14 w-14 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(59,130,246,0.6)]">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
             </div>
-            <div>
-                <h1 class="text-2xl font-semibold text-white tracking-tight">CloudNotes</h1>
-                <p class="text-xs text-zinc-500 uppercase tracking-widest font-medium">Edge Optimized</p>
+            <h1 class="text-3xl font-bold text-white tracking-tighter glow-text">CloudNotes</h1>
+            <div class="flex items-center gap-2 mt-2">
+                <span class="h-1.5 w-1.5 rounded-full bg-blue-500 animate-ping"></span>
+                <p class="text-[10px] uppercase tracking-[0.3em] text-blue-500 font-bold">Edge Protocol Active</p>
             </div>
         </header>
 
-        <div class="space-y-6">
-            <div class="relative">
+        <div class="space-y-8">
+            <div class="relative group">
                 <textarea id="note" 
-                    class="w-full h-72 p-8 bg-zinc-950/40 rounded-[1.5rem] border border-white/5 text-zinc-100 placeholder-zinc-700 focus:border-blue-500/40 focus:outline-none transition-all resize-none text-lg leading-relaxed" 
-                    placeholder="Start typing your thoughts..."></textarea>
+                    class="w-full h-64 p-6 bg-transparent text-zinc-100 placeholder-zinc-800 border-b border-zinc-900 focus:border-blue-600 focus:outline-none transition-all resize-none text-lg" 
+                    placeholder="Input data..."></textarea>
             </div>
 
             <button onclick="sendToCloud()" 
-                class="group w-full bg-white hover:bg-zinc-100 text-black h-16 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
-                <span id="btn-text">Sync to Edge</span>
-                <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                class="relative w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-full font-bold transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_35px_rgba(59,130,246,0.5)] active:scale-95 flex items-center justify-center gap-3 overflow-hidden">
+                <span id="btn-text" class="relative z-10">SYNC DATA</span>
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
             </button>
 
-            <div id="out" class="text-center font-mono text-[10px] text-zinc-600 uppercase tracking-[0.2em] h-4"></div>
+            <div id="out" class="text-center font-mono text-[9px] text-zinc-700 uppercase tracking-widest leading-relaxed"></div>
         </div>
     </div>
 
@@ -54,8 +59,8 @@
             const out = document.getElementById('out');
             const btn = document.getElementById('btn-text');
             
-            out.innerText = "Encrypting Handshake...";
-            btn.innerText = "Processing...";
+            out.innerText = "> Initializing Transfer";
+            btn.innerText = "UPLOADING...";
 
             try {
                 const res = await fetch('/api/save', {
@@ -65,12 +70,12 @@
                 });
                 const data = await res.json();
                 
-                out.innerText = `Data Synced: ${data.byteSize}B at ${new Date().toLocaleTimeString()}`;
-                btn.innerText = "Success";
-                setTimeout(() => { btn.innerText = "Sync to Edge"; }, 2000);
+                out.innerText = `> Handshake Complete: ${data.byteSize}B received at Edge`;
+                btn.innerText = "COMPLETED";
+                setTimeout(() => { btn.innerText = "SYNC DATA"; }, 2000);
             } catch (err) {
-                out.innerText = "Cloud Sync Offline";
-                btn.innerText = "Retry";
+                out.innerText = "> Error: Connection Interrupted";
+                btn.innerText = "RETRY";
             }
         }
     </script>
