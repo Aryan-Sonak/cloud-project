@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>CloudNotes</title>
+</head>
+<body class="bg-black text-zinc-300 flex flex-col items-center justify-center min-h-screen">
+    <div class="w-full max-w-xl p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
+        <h1 class="text-xl font-medium mb-4 text-white">Serverless Markdown</h1>
+        <textarea id="note" class="w-full h-48 p-4 bg-black rounded-xl border border-zinc-800 focus:border-blue-500 outline-none transition-all" placeholder="Enter text..."></textarea>
+        <button onclick="sendToCloud()" class="mt-4 w-full bg-white text-black py-3 rounded-xl font-semibold hover:bg-zinc-200 transition-all">Deploy to Edge</button>
+        <p id="out" class="mt-4 text-xs font-mono text-zinc-500 text-center"></p>
+    </div>
+
+    <script>
+        async function sendToCloud() {
+            const out = document.getElementById('out');
+            out.innerText = "Connecting to Serverless Function...";
+            try {
+                const res = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: document.getElementById('note').value })
+                });
+                const data = await res.json();
+                out.innerText = `DONE: ${data.message} | Size: ${data.byteSize}B`;
+            } catch (err) {
+                out.innerText = "Connection Error";
+            }
+        }
+    </script>
+</body>
+</html>
