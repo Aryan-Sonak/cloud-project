@@ -2,20 +2,61 @@
 <html lang="en">
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
     <title>CloudNotes</title>
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: radial-gradient(circle at top left, #1a1a1a, #000);
+        }
+        .glow-box {
+            box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.2);
+        }
+        .mesh-bg {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.05) 0px, transparent 50%);
+        }
+    </style>
 </head>
-<body class="bg-black text-zinc-300 flex flex-col items-center justify-center min-h-screen">
-    <div class="w-full max-w-xl p-8 border border-zinc-800 rounded-2xl bg-zinc-900/50">
-        <h1 class="text-xl font-medium mb-4 text-white">Serverless Markdown</h1>
-        <textarea id="note" class="w-full h-48 p-4 bg-black rounded-xl border border-zinc-800 focus:border-blue-500 outline-none transition-all" placeholder="Enter text..."></textarea>
-        <button onclick="sendToCloud()" class="mt-4 w-full bg-white text-black py-3 rounded-xl font-semibold hover:bg-zinc-200 transition-all">Deploy to Edge</button>
-        <p id="out" class="mt-4 text-xs font-mono text-zinc-500 text-center"></p>
+<body class="mesh-bg text-zinc-400 min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-2xl bg-zinc-900/40 border border-white/5 rounded-[2rem] p-12 glow-box backdrop-blur-xl">
+        
+        <header class="flex items-center gap-4 mb-10">
+            <div class="h-12 w-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+            </div>
+            <div>
+                <h1 class="text-2xl font-semibold text-white tracking-tight">CloudNotes</h1>
+                <p class="text-xs text-zinc-500 uppercase tracking-widest font-medium">Edge Optimized</p>
+            </div>
+        </header>
+
+        <div class="space-y-6">
+            <div class="relative">
+                <textarea id="note" 
+                    class="w-full h-72 p-8 bg-zinc-950/40 rounded-[1.5rem] border border-white/5 text-zinc-100 placeholder-zinc-700 focus:border-blue-500/40 focus:outline-none transition-all resize-none text-lg leading-relaxed" 
+                    placeholder="Start typing your thoughts..."></textarea>
+            </div>
+
+            <button onclick="sendToCloud()" 
+                class="group w-full bg-white hover:bg-zinc-100 text-black h-16 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 active:scale-[0.98]">
+                <span id="btn-text">Sync to Edge</span>
+                <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+
+            <div id="out" class="text-center font-mono text-[10px] text-zinc-600 uppercase tracking-[0.2em] h-4"></div>
+        </div>
     </div>
 
     <script>
         async function sendToCloud() {
             const out = document.getElementById('out');
-            out.innerText = "Connecting to Serverless Function...";
+            const btn = document.getElementById('btn-text');
+            
+            out.innerText = "Encrypting Handshake...";
+            btn.innerText = "Processing...";
+
             try {
                 const res = await fetch('/api/save', {
                     method: 'POST',
@@ -23,9 +64,13 @@
                     body: JSON.stringify({ text: document.getElementById('note').value })
                 });
                 const data = await res.json();
-                out.innerText = `DONE: ${data.message} | Size: ${data.byteSize}B`;
+                
+                out.innerText = `Data Synced: ${data.byteSize}B at ${new Date().toLocaleTimeString()}`;
+                btn.innerText = "Success";
+                setTimeout(() => { btn.innerText = "Sync to Edge"; }, 2000);
             } catch (err) {
-                out.innerText = "Connection Error";
+                out.innerText = "Cloud Sync Offline";
+                btn.innerText = "Retry";
             }
         }
     </script>
